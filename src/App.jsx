@@ -1,13 +1,30 @@
 function App() {
-    return (
-        <main>
-            <h1>Açai Bomba</h1>
+  return (
+    <main className="teste-tema">
+      <div className="container">
+        <p className="texto-dourado">
+          AÇAÍ BOMBA
+        </p>
 
-            <p>
-                Mais que um açai, uma explosão de sabor!
-            </p>
-        </main>
-    );
+        <h1>
+          SEU AÇAÍ,
+          <br />
+
+          <span className="texto-dourado">
+            SUAS REGRAS.
+          </span>
+        </h1>
+
+        <p>
+          Mais que açaí, é atitude.
+        </p>
+
+        <button className="botao-dourado">
+          Montar meu açaí
+        </button>
+      </div>
+    </main>
+  );
 }
 
 export default App;
