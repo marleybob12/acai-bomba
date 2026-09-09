@@ -137,7 +137,7 @@ transform: translateY(-2px);
 }
 
 .teste-tema {
-  min-height: 100vh;
+  min-height: calc(100vh - 74px);
 
   display: flex;
 
