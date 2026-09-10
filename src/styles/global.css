@@ -136,30 +136,3 @@ transform: translateY(-2px);
   filter: brightness(1.08);
 }
 
-.teste-tema {
-  min-height: calc(100vh - 74px);
-
-  display: flex;
-
-  align-items: center;
-}
-.teste-tema h1 {
-  margin: 12px 0 20px;
-
-  font-size: 64px;
-
-  line-height: 0.95;
-
-  font-weight: 900;
-
-  letter-spacing: -3px;
-}
-
-.teste-tema p {
-  margin-bottom: 24px;
-
-  color: var(--texto-secundario);
-}
-.teste-tema .texto-dourado {
-  color: var(--dourado);
-}
