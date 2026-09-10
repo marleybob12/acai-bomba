@@ -104,6 +104,16 @@
   width: 100%;
 }
 
+.header__logo-imagem {
+  display: block;
+
+  width: 105px;
+
+  height: 58px;
+
+  object-fit: contain;
+}
+
 .header__pedido {
   min-height: 42px;
 
@@ -230,4 +240,11 @@
     display: none;
   }
 
+}
+@media (max-width: 520px) {
+  .header__logo-imagem {
+    width: 82px;
+
+    height: 50px;
+  }
 }

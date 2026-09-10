@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import {
-  Crown,
   Menu,
   ShoppingBag,
   X,
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
 import "./Header.css";
 
 function Header() {
@@ -24,22 +24,13 @@ function Header() {
     <header className="header">
       <div className="container header__container">
 
-        <a
-          href="/"
-          className="header__logo"
-          onClick={fecharMenu}
-        >
-          <Crown
-            className="header__crown"
-            size={26}
-            strokeWidth={2}
-          />
-
-          <div className="header__logo-texto">
-            <span>AÇAÍ</span>
-            <strong>BOMBA</strong>
-          </div>
-        </a>
+        <Link to="/" className="header__logo" onClick={fecharMenu}>
+  <img
+    src="/images/branding/logo-acai-bomba.png"
+    alt="Açaí Bomba"
+    className="header__logo-imagem"
+  />
+</Link>
 
         <nav
           className={`header__nav ${
@@ -82,16 +73,14 @@ function Header() {
           </a>
         </nav>
 
-        <a
-          href="#cardapio"
-          className="header__pedido"
-        >
-          <ShoppingBag size={17} />
+        <Link
+  to="/montar" className="header__pedido" onClick={fecharMenu}>
+  <ShoppingBag size={17} />
 
-          <span>
-            Fazer pedido
-          </span>
-        </a>
+  <span>
+    Fazer pedido
+  </span>
+</Link>
 
         <button
           type="button"
