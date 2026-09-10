@@ -6,6 +6,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
 import "./Hero.css";
 
 function Hero() {
@@ -45,14 +46,11 @@ function Hero() {
             e mais momentos bons.
           </p>
 
-          <a
-            href="#cardapio"
-            className="botao-dourado hero__botao"
-          >
+          <Link to="/montar"  className="botao-dourado hero__botao">
             Montar meu açaí
 
             <ArrowRight size={19} />
-          </a>
+          </Link>
 
         </div>
 
