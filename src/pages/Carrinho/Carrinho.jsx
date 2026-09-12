@@ -15,7 +15,7 @@ import {
 
 import { usePedido } from "../../context/PedidoContext";
 
-import "./Carrinho.css";
+import "./carrinho.css";
 
 function Carrinho() {
   const navigate =
