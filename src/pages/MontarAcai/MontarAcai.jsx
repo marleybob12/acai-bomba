@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 
 import {
+  bases,
   categoriasComplementos,
   complementos,
   tamanhos,
@@ -30,14 +31,6 @@ function MontarAcai() {
   const [etapa, setEtapa] =
     useState(1);
 
-  /*
-    Guarda a Bomba da Casa escolhida.
-
-    Isso é separado dos complementos porque
-    queremos continuar mostrando o nome da
-    combinação mesmo depois que o state da
-    navegação for apagado.
-  */
   const [
     bombaAtiva,
     setBombaAtiva,
@@ -52,6 +45,9 @@ function MontarAcai() {
   const {
     tamanho,
     setTamanho,
+
+    base,
+    setBase,
 
     complementosSelecionados,
     alternarComplemento,
@@ -76,10 +72,6 @@ function MontarAcai() {
       return;
     }
 
-    /*
-      Guarda a bomba para conseguirmos
-      mostrá-la durante toda a montagem.
-    */
     setBombaAtiva(bomba);
 
     const complementosDaBomba =
@@ -96,12 +88,6 @@ function MontarAcai() {
 
     setEtapa(1);
 
-    /*
-      Apaga somente o state da navegação.
-
-      A informação continua salva em
-      bombaAtiva dentro desta página.
-    */
     navigate(
       location.pathname,
       {
@@ -112,12 +98,12 @@ function MontarAcai() {
   }, []);
 
   function finalizarMontagem() {
-  adicionarAoCarrinho(
-    bombaAtiva
-  );
+    adicionarAoCarrinho(
+      bombaAtiva
+    );
 
-  navigate("/carrinho");
-}
+    navigate("/carrinho");
+  }
 
   function formatarPreco(valor) {
     return valor.toLocaleString(
@@ -132,7 +118,7 @@ function MontarAcai() {
   function avancar() {
     if (
       etapa === 1 &&
-      !tamanho
+      (!tamanho || !base)
     ) {
       return;
     }
@@ -191,8 +177,6 @@ function MontarAcai() {
 
       <div className="container">
 
-        {/* BOMBA DA CASA ESCOLHIDA */}
-
         {bombaAtiva && (
           <div className="montador__bomba">
 
@@ -225,15 +209,13 @@ function MontarAcai() {
             <p className="montador__bomba-aviso">
               A combinação já foi
               preparada para você.
-              Escolha o tamanho e
-              personalize os complementos
+              Escolha o tamanho, a base
+              e personalize os complementos
               como quiser.
             </p>
 
           </div>
         )}
-
-        {/* PROGRESSO */}
 
         <div className="montador__progresso">
 
@@ -264,7 +246,7 @@ function MontarAcai() {
                 <small>
                   {numero ===
                     1 &&
-                    "Tamanho"}
+                    "Tamanho e base"}
 
                   {numero ===
                     2 &&
@@ -281,8 +263,6 @@ function MontarAcai() {
 
         </div>
 
-        {/* ETAPA 1 */}
-
         {etapa === 1 && (
           <div className="montador__conteudo">
 
@@ -293,77 +273,161 @@ function MontarAcai() {
               </span>
 
               <h1>
-                Escolha o tamanho
+                Monte a base do seu copo
               </h1>
 
               <p>
-                Primeiro escolha o
-                tamanho do seu Açaí
-                Bomba.
+                Escolha primeiro o tamanho
+                e depois como você quer a base.
               </p>
 
             </header>
 
-            <div className="montador__tamanhos">
+            <div className="montador__bloco">
 
-              {tamanhos.map(
-                (item) => {
-                  const selecionado =
-                    tamanho?.id ===
-                    item.id;
+              <div className="montador__subtitulo">
+                <span>1</span>
 
-                  return (
-                    <button
-                      type="button"
-                      key={item.id}
-                      className={
-                        selecionado
-                          ? "tamanho tamanho--selecionado"
-                          : "tamanho"
-                      }
-                      onClick={() =>
-                        setTamanho(
-                          item
-                        )
-                      }
-                    >
+                <div>
+                  <h2>
+                    Escolha o tamanho
+                  </h2>
 
-                      {item.destaque && (
-                        <span className="tamanho__destaque">
-                          Mais pedido
-                        </span>
-                      )}
+                  <p>
+                    Selecione o volume do seu copo.
+                  </p>
+                </div>
+              </div>
 
-                      <span className="tamanho__volume">
-                        {item.nome}
-                      </span>
+              <div className="montador__tamanhos">
 
-                      <strong>
-                        {formatarPreco(
-                          item.preco
-                        )}
-                      </strong>
+                {tamanhos.map(
+                  (item) => {
+                    const selecionado =
+                      tamanho?.id ===
+                      item.id;
 
-                      <p>
-                        {
-                          item.descricao
+                    return (
+                      <button
+                        type="button"
+                        key={item.id}
+                        className={
+                          selecionado
+                            ? "tamanho tamanho--selecionado"
+                            : "tamanho"
                         }
-                      </p>
+                        onClick={() =>
+                          setTamanho(
+                            item
+                          )
+                        }
+                      >
 
-                      <span className="tamanho__seletor">
-
-                        {selecionado && (
-                          <Check
-                            size={17}
-                          />
+                        {item.destaque && (
+                          <span className="tamanho__destaque">
+                            Mais pedido
+                          </span>
                         )}
 
-                      </span>
+                        <span className="tamanho__volume">
+                          {item.nome}
+                        </span>
 
-                    </button>
-                  );
-                }
-              )}
+                        <strong>
+                          {formatarPreco(
+                            item.preco
+                          )}
+                        </strong>
+
+                        <p>
+                          {
+                            item.descricao
+                          }
+                        </p>
+
+                        <span className="tamanho__seletor">
+
+                          {selecionado && (
+                            <Check
+                              size={17}
+                            />
+                          )}
+
+                        </span>
+
+                      </button>
+                    );
+                  }
+                )}
+
+              </div>
+
+            </div>
+
+            <div className="montador__bloco montador__bloco--base">
+
+              <div className="montador__subtitulo">
+                <span>2</span>
+
+                <div>
+                  <h2>
+                    Escolha sua base
+                  </h2>
+
+                  <p>
+                    Essa escolha é obrigatória para preparar o copo corretamente.
+                  </p>
+                </div>
+              </div>
+
+              <div className="montador__bases">
+
+                {bases.map(
+                  (item) => {
+                    const selecionado =
+                      base?.id ===
+                      item.id;
+
+                    return (
+                      <button
+                        type="button"
+                        key={item.id}
+                        className={
+                          selecionado
+                            ? "base base--selecionada"
+                            : "base"
+                        }
+                        onClick={() =>
+                          setBase(item)
+                        }
+                      >
+                        <span className="base__icone">
+                          {item.id === "acai" && "🟣"}
+                          {item.id === "cupuacu" && "🟡"}
+                          {item.id === "meio-a-meio" && "🟣🟡"}
+                        </span>
+
+                        <strong>
+                          {item.nome}
+                        </strong>
+
+                        <p>
+                          {item.descricao}
+                        </p>
+
+                        <span className="base__seletor">
+                          {selecionado && (
+                            <Check
+                              size={17}
+                            />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  }
+                )}
+
+              </div>
 
             </div>
 
@@ -372,7 +436,10 @@ function MontarAcai() {
               <button
                 type="button"
                 className="botao-dourado"
-                disabled={!tamanho}
+                disabled={
+                  !tamanho ||
+                  !base
+                }
                 onClick={avancar}
               >
                 Continuar
@@ -386,8 +453,6 @@ function MontarAcai() {
 
           </div>
         )}
-
-        {/* ETAPA 2 */}
 
         {etapa === 2 && (
           <div className="montador__conteudo">
@@ -405,7 +470,7 @@ function MontarAcai() {
               <p>
                 {bombaAtiva
                   ? `Os complementos da ${bombaAtiva.nome} já estão selecionados. Você pode alterar como quiser.`
-                  : "Agora deixe seu açaí exatamente do seu jeito."}
+                  : "Agora deixe seu copo exatamente do seu jeito."}
               </p>
 
             </header>
@@ -543,8 +608,6 @@ function MontarAcai() {
           </div>
         )}
 
-        {/* ETAPA 3 */}
-
         {etapa === 3 && (
           <div className="montador__conteudo">
 
@@ -579,6 +642,27 @@ function MontarAcai() {
 
                   <strong>
                     {tamanho?.nome}
+                  </strong>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEtapa(1)
+                    }
+                  >
+                    Alterar
+                  </button>
+
+                </div>
+
+                <div className="resumo__grupo">
+
+                  <span>
+                    Base
+                  </span>
+
+                  <strong>
+                    {base?.nome}
                   </strong>
 
                   <button
@@ -720,9 +804,9 @@ function MontarAcai() {
                     finalizarMontagem
                   }
                 >
-              {itemEmEdicaoId
-  ? "Salvar alterações"
-  : "Continuar pedido"}    
+                  {itemEmEdicaoId
+                    ? "Salvar alterações"
+                    : "Continuar pedido"}
 
                   <ArrowRight
                     size={18}
