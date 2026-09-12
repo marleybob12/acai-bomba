@@ -12,6 +12,12 @@ const PedidoContext =
 const CHAVE_CARRINHO =
   "acai-bomba-carrinho";
 
+const BASE_PADRAO = {
+  id: "acai",
+  nome: "Só Açaí",
+  descricao: "Copo completo com açaí.",
+};
+
 function carregarCarrinho() {
   if (
     typeof window ===
@@ -35,9 +41,18 @@ function carregarCarrinho() {
         carrinhoSalvo
       );
 
-    return Array.isArray(dados)
-      ? dados
-      : [];
+    if (!Array.isArray(dados)) {
+      return [];
+    }
+
+    return dados.map(
+      (item) => ({
+        ...item,
+        base:
+          item.base ||
+          BASE_PADRAO,
+      })
+    );
   } catch (erro) {
     console.error(
       "Erro ao carregar carrinho:",
@@ -57,6 +72,11 @@ export function PedidoProvider({
   ] = useState(null);
 
   const [
+    base,
+    setBase,
+  ] = useState(null);
+
+  const [
     complementosSelecionados,
     setComplementosSelecionados,
   ] = useState([]);
@@ -66,10 +86,6 @@ export function PedidoProvider({
     setQuantidade,
   ] = useState(1);
 
-  /*
-    Agora o carrinho tenta carregar
-    os itens salvos no navegador.
-  */
   const [
     carrinho,
     setCarrinho,
@@ -82,10 +98,6 @@ export function PedidoProvider({
     setItemEmEdicaoId,
   ] = useState(null);
 
-  /*
-    Sempre que o carrinho mudar,
-    salva automaticamente.
-  */
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -190,6 +202,8 @@ export function PedidoProvider({
 
     setTamanho(null);
 
+    setBase(null);
+
     setComplementosSelecionados(
       complementosDaBomba
     );
@@ -199,6 +213,8 @@ export function PedidoProvider({
 
   function limparMontagem() {
     setTamanho(null);
+
+    setBase(null);
 
     setComplementosSelecionados(
       []
@@ -226,6 +242,11 @@ export function PedidoProvider({
       item.tamanho
     );
 
+    setBase(
+      item.base ||
+      BASE_PADRAO
+    );
+
     setComplementosSelecionados([
       ...item.complementos,
     ]);
@@ -242,7 +263,7 @@ export function PedidoProvider({
   function adicionarAoCarrinho(
     bomba = null
   ) {
-    if (!tamanho) {
+    if (!tamanho || !base) {
       return;
     }
 
@@ -258,19 +279,13 @@ export function PedidoProvider({
         0
       );
 
-    /*
-      Se veio de uma Bomba da Casa,
-      usamos o nome da bomba.
+    const nomeBaseProduto =
+      bomba?.nome ||
+      "Açaí Bomba personalizado";
 
-      Caso contrário, é uma montagem
-      personalizada.
-    */
     const nomeProduto =
-      bomba?.nome || null;
+      `${nomeBaseProduto} • ${base.nome}`;
 
-    /*
-      EDIÇÃO
-    */
     if (itemEmEdicaoId) {
       setCarrinho(
         (atual) =>
@@ -283,6 +298,8 @@ export function PedidoProvider({
 
                     tamanho,
 
+                    base,
+
                     complementos: [
                       ...complementosSelecionados,
                     ],
@@ -291,15 +308,7 @@ export function PedidoProvider({
 
                     precoUnitario,
 
-                    /*
-                      Se estiver editando uma
-                      Bomba da Casa, mantém
-                      o nome original.
-                    */
-                    nomeProduto:
-                      nomeProduto ||
-                      item.nomeProduto ||
-                      "Açaí Bomba personalizado",
+                    nomeProduto,
                   }
                 : item
           )
@@ -310,18 +319,15 @@ export function PedidoProvider({
       return;
     }
 
-    /*
-      NOVO ITEM
-    */
     const novoItem = {
       id:
         crypto.randomUUID(),
 
-      nomeProduto:
-        nomeProduto ||
-        "Açaí Bomba personalizado",
+      nomeProduto,
 
       tamanho,
+
+      base,
 
       complementos: [
         ...complementosSelecionados,
@@ -392,6 +398,9 @@ export function PedidoProvider({
   const value = {
     tamanho,
     setTamanho,
+
+    base,
+    setBase,
 
     complementosSelecionados,
     alternarComplemento,
