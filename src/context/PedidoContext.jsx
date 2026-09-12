@@ -1,11 +1,52 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
 
-const PedidoContext = createContext(null);
+const PedidoContext =
+  createContext(null);
+
+const CHAVE_CARRINHO =
+  "acai-bomba-carrinho";
+
+function carregarCarrinho() {
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return [];
+  }
+
+  try {
+    const carrinhoSalvo =
+      localStorage.getItem(
+        CHAVE_CARRINHO
+      );
+
+    if (!carrinhoSalvo) {
+      return [];
+    }
+
+    const dados =
+      JSON.parse(
+        carrinhoSalvo
+      );
+
+    return Array.isArray(dados)
+      ? dados
+      : [];
+  } catch (erro) {
+    console.error(
+      "Erro ao carregar carrinho:",
+      erro
+    );
+
+    return [];
+  }
+}
 
 export function PedidoProvider({
   children,
@@ -25,15 +66,41 @@ export function PedidoProvider({
     setQuantidade,
   ] = useState(1);
 
+  /*
+    Agora o carrinho tenta carregar
+    os itens salvos no navegador.
+  */
   const [
     carrinho,
     setCarrinho,
-  ] = useState([]);
+  ] = useState(
+    carregarCarrinho
+  );
 
   const [
     itemEmEdicaoId,
     setItemEmEdicaoId,
   ] = useState(null);
+
+  /*
+    Sempre que o carrinho mudar,
+    salva automaticamente.
+  */
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        CHAVE_CARRINHO,
+        JSON.stringify(
+          carrinho
+        )
+      );
+    } catch (erro) {
+      console.error(
+        "Erro ao salvar carrinho:",
+        erro
+      );
+    }
+  }, [carrinho]);
 
   const total = useMemo(() => {
     if (!tamanho) {
@@ -70,7 +137,7 @@ export function PedidoProvider({
         ) =>
           totalAtual +
           item.precoUnitario *
-          item.quantidade,
+            item.quantidade,
         0
       );
     }, [carrinho]);
@@ -172,7 +239,9 @@ export function PedidoProvider({
     );
   }
 
-  function adicionarAoCarrinho() {
+  function adicionarAoCarrinho(
+    bomba = null
+  ) {
     if (!tamanho) {
       return;
     }
@@ -190,8 +259,17 @@ export function PedidoProvider({
       );
 
     /*
-      SE ESTIVER EDITANDO:
-      atualiza o item existente.
+      Se veio de uma Bomba da Casa,
+      usamos o nome da bomba.
+
+      Caso contrário, é uma montagem
+      personalizada.
+    */
+    const nomeProduto =
+      bomba?.nome || null;
+
+    /*
+      EDIÇÃO
     */
     if (itemEmEdicaoId) {
       setCarrinho(
@@ -212,6 +290,16 @@ export function PedidoProvider({
                     quantidade,
 
                     precoUnitario,
+
+                    /*
+                      Se estiver editando uma
+                      Bomba da Casa, mantém
+                      o nome original.
+                    */
+                    nomeProduto:
+                      nomeProduto ||
+                      item.nomeProduto ||
+                      "Açaí Bomba personalizado",
                   }
                 : item
           )
@@ -223,10 +311,15 @@ export function PedidoProvider({
     }
 
     /*
-      NOVA MONTAGEM
+      NOVO ITEM
     */
     const novoItem = {
-      id: crypto.randomUUID(),
+      id:
+        crypto.randomUUID(),
+
+      nomeProduto:
+        nomeProduto ||
+        "Açaí Bomba personalizado",
 
       tamanho,
 

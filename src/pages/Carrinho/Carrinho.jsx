@@ -156,16 +156,14 @@ function Carrinho() {
 
                           <div>
 
-                            <span>
-                              AÇAÍ BOMBA
-                            </span>
+                         <span>
+  {item.nomeProduto ||
+    "Açaí Bomba personalizado"}
+</span>
 
-                            <h2>
-                              {
-                                item.tamanho
-                                  .nome
-                              }
-                            </h2>
+<h2>
+  {item.tamanho.nome}
+</h2>
 
                           </div>
 

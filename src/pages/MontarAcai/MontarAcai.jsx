@@ -112,10 +112,12 @@ function MontarAcai() {
   }, []);
 
   function finalizarMontagem() {
-    adicionarAoCarrinho();
+  adicionarAoCarrinho(
+    bombaAtiva
+  );
 
-    navigate("/carrinho");
-  }
+  navigate("/carrinho");
+}
 
   function formatarPreco(valor) {
     return valor.toLocaleString(

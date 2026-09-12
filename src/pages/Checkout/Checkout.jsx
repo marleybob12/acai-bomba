@@ -273,9 +273,11 @@ export default function Checkout() {
         const complementos =
           item.complementos || [];
 
-        mensagem +=
-          `*${quantidade}x Açaí Bomba - ${tamanho}*\n`;
-
+        const nomeProduto =
+           item.nomeProduto ||
+              "Açaí Bomba personalizado";
+            mensagem +=
+             `*${quantidade}x ${nomeProduto} - ${tamanho}*\n`;
         if (
           complementos.length >
           0
@@ -1033,10 +1035,10 @@ export default function Checkout() {
                     <div>
 
                       <strong>
-                        {item.quantidade}x{" "}
-                        Açaí Bomba
+                       {item.quantidade}x{" "}
+                         {item.nomeProduto ||
+                         "Açaí Bomba personalizado"}
                       </strong>
-
                       <span>
                         {
                           item.tamanho
