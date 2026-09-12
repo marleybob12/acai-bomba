@@ -18,6 +18,18 @@ const BASE_PADRAO = {
   descricao: "Copo completo com açaí.",
 };
 
+function obterNomeBaseProduto(item) {
+  if (item.nomeBaseProduto) {
+    return item.nomeBaseProduto;
+  }
+
+  if (item.nomeProduto) {
+    return item.nomeProduto.split(" • ")[0];
+  }
+
+  return "Açaí Bomba personalizado";
+}
+
 function carregarCarrinho() {
   if (
     typeof window ===
@@ -46,12 +58,24 @@ function carregarCarrinho() {
     }
 
     return dados.map(
-      (item) => ({
-        ...item,
-        base:
+      (item) => {
+        const baseItem =
           item.base ||
-          BASE_PADRAO,
-      })
+          BASE_PADRAO;
+
+        const nomeBaseProduto =
+          obterNomeBaseProduto(
+            item
+          );
+
+        return {
+          ...item,
+          base: baseItem,
+          nomeBaseProduto,
+          nomeProduto:
+            `${nomeBaseProduto} • ${baseItem.nome}`,
+        };
+      }
     );
   } catch (erro) {
     console.error(
@@ -279,38 +303,45 @@ export function PedidoProvider({
         0
       );
 
-    const nomeBaseProduto =
-      bomba?.nome ||
-      "Açaí Bomba personalizado";
-
-    const nomeProduto =
-      `${nomeBaseProduto} • ${base.nome}`;
-
     if (itemEmEdicaoId) {
       setCarrinho(
         (atual) =>
           atual.map(
-            (item) =>
-              item.id ===
-              itemEmEdicaoId
-                ? {
-                    ...item,
+            (item) => {
+              if (
+                item.id !==
+                itemEmEdicaoId
+              ) {
+                return item;
+              }
 
-                    tamanho,
+              const nomeBaseProduto =
+                bomba?.nome ||
+                obterNomeBaseProduto(
+                  item
+                );
 
-                    base,
+              return {
+                ...item,
 
-                    complementos: [
-                      ...complementosSelecionados,
-                    ],
+                nomeBaseProduto,
 
-                    quantidade,
+                nomeProduto:
+                  `${nomeBaseProduto} • ${base.nome}`,
 
-                    precoUnitario,
+                tamanho,
 
-                    nomeProduto,
-                  }
-                : item
+                base,
+
+                complementos: [
+                  ...complementosSelecionados,
+                ],
+
+                quantidade,
+
+                precoUnitario,
+              };
+            }
           )
       );
 
@@ -319,11 +350,18 @@ export function PedidoProvider({
       return;
     }
 
+    const nomeBaseProduto =
+      bomba?.nome ||
+      "Açaí Bomba personalizado";
+
     const novoItem = {
       id:
         crypto.randomUUID(),
 
-      nomeProduto,
+      nomeBaseProduto,
+
+      nomeProduto:
+        `${nomeBaseProduto} • ${base.nome}`,
 
       tamanho,
 
