@@ -10,16 +10,16 @@ function Footer() {
           Todos os direitos reservados.
         </p>
 
-        <p>
-          Desenvolvido por{" "}
-          <a
-            href="https://portifolio1-pi-three.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-           Desenvolvido por Marley Tech
-          </a>
-        </p>
+       <p>
+  Desenvolvido por{" "}
+  <a
+    href="https://portifolio1-pi-three.vercel.app/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Thales Web Solutions
+  </a>
+</p>
 
       </div>
     </footer>

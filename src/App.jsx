@@ -2,8 +2,12 @@ import Header from "./components/Header/Header";
 import Hero from "./components/Hero/Hero";
 import ComoFunciona from "./components/ComoFunciona/ComoFunciona";
 import BombasDaCasa from "./components/BombasDaCasa/BombasDaCasa";
+import Footer from "./components/Footer/Footer";
 
-import { Route, Routes } from "react-router-dom";
+import {
+  Route,
+  Routes,
+} from "react-router-dom";
 
 import MontarAcai from "./pages/MontarAcai/MontarAcai";
 import Carrinho from "./pages/Carrinho/Carrinho";
@@ -31,20 +35,28 @@ function App() {
 
           <Route
             path="/montar"
-            element={<MontarAcai />}
+            element={
+              <MontarAcai />
+            }
           />
 
           <Route
             path="/carrinho"
-            element={<Carrinho />}
+            element={
+              <Carrinho />
+            }
           />
 
           <Route
             path="/checkout"
-            element={<Checkout />}
+            element={
+              <Checkout />
+            }
           />
         </Routes>
       </main>
+
+      <Footer />
     </>
   );
 }
