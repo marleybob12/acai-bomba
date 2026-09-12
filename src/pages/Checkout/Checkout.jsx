@@ -518,9 +518,10 @@ export default function Checkout() {
       `https://wa.me/${contato.whatsapp}?text=${mensagemCodificada}`;
 
     window.open(
-      url,
-      "_blank"
-    );
+  url,
+  "_blank",
+  "noopener,noreferrer"
+);
   }
 
   return (
