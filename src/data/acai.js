@@ -22,6 +22,26 @@ export const tamanhos = [
   },
 ];
 
+export const bases = [
+  {
+    id: "acai",
+    nome: "Só Açaí",
+    descricao: "Copo completo com açaí.",
+  },
+
+  {
+    id: "cupuacu",
+    nome: "Só Cupuaçu",
+    descricao: "Copo completo com cupuaçu.",
+  },
+
+  {
+    id: "meio-a-meio",
+    nome: "Meio a Meio",
+    descricao: "Metade açaí e metade cupuaçu.",
+  },
+];
+
 export const complementos = [
   {
     id: "morango",
