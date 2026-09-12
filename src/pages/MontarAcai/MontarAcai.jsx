@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   ArrowLeft,
@@ -8,7 +11,11 @@ import {
   Plus,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   categoriasComplementos,
   complementos,
@@ -20,37 +27,121 @@ import { usePedido } from "../../context/PedidoContext";
 import "./MontarAcai.css";
 
 function MontarAcai() {
-  const [etapa, setEtapa] = useState(1);
-const navigate = useNavigate();
+  const [etapa, setEtapa] =
+    useState(1);
+
+  /*
+    Guarda a Bomba da Casa escolhida.
+
+    Isso é separado dos complementos porque
+    queremos continuar mostrando o nome da
+    combinação mesmo depois que o state da
+    navegação for apagado.
+  */
+  const [
+    bombaAtiva,
+    setBombaAtiva,
+  ] = useState(null);
+
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
+
   const {
     tamanho,
     setTamanho,
+
     complementosSelecionados,
     alternarComplemento,
+
     quantidade,
     setQuantidade,
+
     total,
 
     adicionarAoCarrinho,
+
+    aplicarBomba,
+    itemEmEdicaoId,
   } = usePedido();
-function finalizarMontagem() {
-  adicionarAoCarrinho();
 
-  navigate("/carrinho");
-}
-  function formatarPreco(valor) {
-    return valor.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  }
+  useEffect(() => {
+    const bomba =
+      location.state
+        ?.bombaSelecionada;
 
-  function avancar() {
-    if (etapa === 1 && !tamanho) {
+    if (!bomba) {
       return;
     }
 
-    setEtapa((atual) => Math.min(atual + 1, 3));
+    /*
+      Guarda a bomba para conseguirmos
+      mostrá-la durante toda a montagem.
+    */
+    setBombaAtiva(bomba);
+
+    const complementosDaBomba =
+      complementos.filter(
+        (complemento) =>
+          bomba.ingredientes.includes(
+            complemento.nome
+          )
+      );
+
+    aplicarBomba(
+      complementosDaBomba
+    );
+
+    setEtapa(1);
+
+    /*
+      Apaga somente o state da navegação.
+
+      A informação continua salva em
+      bombaAtiva dentro desta página.
+    */
+    navigate(
+      location.pathname,
+      {
+        replace: true,
+        state: null,
+      }
+    );
+  }, []);
+
+  function finalizarMontagem() {
+    adicionarAoCarrinho();
+
+    navigate("/carrinho");
+  }
+
+  function formatarPreco(valor) {
+    return valor.toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL",
+      }
+    );
+  }
+
+  function avancar() {
+    if (
+      etapa === 1 &&
+      !tamanho
+    ) {
+      return;
+    }
+
+    setEtapa(
+      (atual) =>
+        Math.min(
+          atual + 1,
+          3
+        )
+    );
 
     window.scrollTo({
       top: 0,
@@ -59,7 +150,13 @@ function finalizarMontagem() {
   }
 
   function voltar() {
-    setEtapa((atual) => Math.max(atual - 1, 1));
+    setEtapa(
+      (atual) =>
+        Math.max(
+          atual - 1,
+          1
+        )
+    );
 
     window.scrollTo({
       top: 0,
@@ -68,109 +165,203 @@ function finalizarMontagem() {
   }
 
   function aumentarQuantidade() {
-    setQuantidade((atual) => Math.min(atual + 1, 10));
+    setQuantidade(
+      (atual) =>
+        Math.min(
+          atual + 1,
+          10
+        )
+    );
   }
 
   function diminuirQuantidade() {
-    setQuantidade((atual) => Math.max(atual - 1, 1));
+    setQuantidade(
+      (atual) =>
+        Math.max(
+          atual - 1,
+          1
+        )
+    );
   }
 
   return (
     <section className="montador">
+
       <div className="container">
+
+        {/* BOMBA DA CASA ESCOLHIDA */}
+
+        {bombaAtiva && (
+          <div className="montador__bomba">
+
+            <div className="montador__bomba-conteudo">
+
+              <span className="montador__bomba-selo">
+                BOMBA DA CASA
+              </span>
+
+              <div>
+
+                <p>
+                  Você escolheu
+                </p>
+
+                <h2>
+                  {bombaAtiva.nome}
+                </h2>
+
+                <span className="montador__bomba-ingredientes">
+                  {bombaAtiva.ingredientes.join(
+                    " • "
+                  )}
+                </span>
+
+              </div>
+
+            </div>
+
+            <p className="montador__bomba-aviso">
+              A combinação já foi
+              preparada para você.
+              Escolha o tamanho e
+              personalize os complementos
+              como quiser.
+            </p>
+
+          </div>
+        )}
+
+        {/* PROGRESSO */}
 
         <div className="montador__progresso">
 
-          {[1, 2, 3].map((numero) => (
-            <div
-              className="montador__etapa"
-              key={numero}
-            >
-              <span
-                className={
-                  etapa >= numero
-                    ? "montador__numero montador__numero--ativo"
-                    : "montador__numero"
-                }
+          {[1, 2, 3].map(
+            (numero) => (
+              <div
+                className="montador__etapa"
+                key={numero}
               >
-                {etapa > numero ? (
-                  <Check size={17} />
-                ) : (
-                  numero
-                )}
-              </span>
 
-              <small>
-                {numero === 1 && "Tamanho"}
-                {numero === 2 && "Complementos"}
-                {numero === 3 && "Resumo"}
-              </small>
-            </div>
-          ))}
+                <span
+                  className={
+                    etapa >= numero
+                      ? "montador__numero montador__numero--ativo"
+                      : "montador__numero"
+                  }
+                >
+                  {etapa >
+                  numero ? (
+                    <Check
+                      size={17}
+                    />
+                  ) : (
+                    numero
+                  )}
+                </span>
+
+                <small>
+                  {numero ===
+                    1 &&
+                    "Tamanho"}
+
+                  {numero ===
+                    2 &&
+                    "Complementos"}
+
+                  {numero ===
+                    3 &&
+                    "Resumo"}
+                </small>
+
+              </div>
+            )
+          )}
 
         </div>
+
+        {/* ETAPA 1 */}
 
         {etapa === 1 && (
           <div className="montador__conteudo">
 
             <header className="montador__cabecalho">
-              <span>PASSO 01</span>
+
+              <span>
+                PASSO 01
+              </span>
 
               <h1>
                 Escolha o tamanho
               </h1>
 
               <p>
-                Primeiro escolha o tamanho
-                do seu Açaí Bomba.
+                Primeiro escolha o
+                tamanho do seu Açaí
+                Bomba.
               </p>
+
             </header>
 
             <div className="montador__tamanhos">
 
-              {tamanhos.map((item) => {
-                const selecionado =
-                  tamanho?.id === item.id;
+              {tamanhos.map(
+                (item) => {
+                  const selecionado =
+                    tamanho?.id ===
+                    item.id;
 
-                return (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={
-                      selecionado
-                        ? "tamanho tamanho--selecionado"
-                        : "tamanho"
-                    }
-                    onClick={() => setTamanho(item)}
-                  >
+                  return (
+                    <button
+                      type="button"
+                      key={item.id}
+                      className={
+                        selecionado
+                          ? "tamanho tamanho--selecionado"
+                          : "tamanho"
+                      }
+                      onClick={() =>
+                        setTamanho(
+                          item
+                        )
+                      }
+                    >
 
-                    {item.destaque && (
-                      <span className="tamanho__destaque">
-                        Mais pedido
-                      </span>
-                    )}
-
-                    <span className="tamanho__volume">
-                      {item.nome}
-                    </span>
-
-                    <strong>
-                      {formatarPreco(item.preco)}
-                    </strong>
-
-                    <p>
-                      {item.descricao}
-                    </p>
-
-                    <span className="tamanho__seletor">
-                      {selecionado && (
-                        <Check size={17} />
+                      {item.destaque && (
+                        <span className="tamanho__destaque">
+                          Mais pedido
+                        </span>
                       )}
-                    </span>
 
-                  </button>
-                );
-              })}
+                      <span className="tamanho__volume">
+                        {item.nome}
+                      </span>
+
+                      <strong>
+                        {formatarPreco(
+                          item.preco
+                        )}
+                      </strong>
+
+                      <p>
+                        {
+                          item.descricao
+                        }
+                      </p>
+
+                      <span className="tamanho__seletor">
+
+                        {selecionado && (
+                          <Check
+                            size={17}
+                          />
+                        )}
+
+                      </span>
+
+                    </button>
+                  );
+                }
+              )}
 
             </div>
 
@@ -184,7 +375,9 @@ function finalizarMontagem() {
               >
                 Continuar
 
-                <ArrowRight size={18} />
+                <ArrowRight
+                  size={18}
+                />
               </button>
 
             </div>
@@ -192,20 +385,27 @@ function finalizarMontagem() {
           </div>
         )}
 
+        {/* ETAPA 2 */}
+
         {etapa === 2 && (
           <div className="montador__conteudo">
 
             <header className="montador__cabecalho">
-              <span>PASSO 02</span>
+
+              <span>
+                PASSO 02
+              </span>
 
               <h1>
                 Escolha os complementos
               </h1>
 
               <p>
-                Agora deixe seu açaí exatamente
-                do seu jeito.
+                {bombaAtiva
+                  ? `Os complementos da ${bombaAtiva.nome} já estão selecionados. Você pode alterar como quiser.`
+                  : "Agora deixe seu açaí exatamente do seu jeito."}
               </p>
+
             </header>
 
             <div className="montador__categorias">
@@ -214,8 +414,11 @@ function finalizarMontagem() {
                 (categoria) => (
                   <div
                     className="categoria"
-                    key={categoria}
+                    key={
+                      categoria
+                    }
                   >
+
                     <h2>
                       {categoria}
                     </h2>
@@ -224,57 +427,83 @@ function finalizarMontagem() {
 
                       {complementos
                         .filter(
-                          (item) =>
-                            item.categoria === categoria
+                          (
+                            item
+                          ) =>
+                            item.categoria ===
+                            categoria
                         )
-                        .map((item) => {
-                          const selecionado =
-                            complementosSelecionados.some(
-                              (selecionado) =>
-                                selecionado.id === item.id
+                        .map(
+                          (
+                            item
+                          ) => {
+                            const selecionado =
+                              complementosSelecionados.some(
+                                (
+                                  selecionado
+                                ) =>
+                                  selecionado.id ===
+                                  item.id
+                              );
+
+                            return (
+                              <button
+                                type="button"
+                                key={
+                                  item.id
+                                }
+                                className={
+                                  selecionado
+                                    ? "complemento complemento--selecionado"
+                                    : "complemento"
+                                }
+                                onClick={() =>
+                                  alternarComplemento(
+                                    item
+                                  )
+                                }
+                              >
+
+                                <span className="complemento__icone">
+                                  {item.nome.charAt(
+                                    0
+                                  )}
+                                </span>
+
+                                <strong>
+                                  {
+                                    item.nome
+                                  }
+                                </strong>
+
+                                <small>
+                                  {item.preco >
+                                  0
+                                    ? `+ ${formatarPreco(
+                                        item.preco
+                                      )}`
+                                    : "Incluso"}
+                                </small>
+
+                                <span className="complemento__check">
+
+                                  {selecionado && (
+                                    <Check
+                                      size={
+                                        15
+                                      }
+                                    />
+                                  )}
+
+                                </span>
+
+                              </button>
                             );
-
-                          return (
-                            <button
-                              type="button"
-                              key={item.id}
-                              className={
-                                selecionado
-                                  ? "complemento complemento--selecionado"
-                                  : "complemento"
-                              }
-                              onClick={() =>
-                                alternarComplemento(item)
-                              }
-                            >
-
-                              <span className="complemento__icone">
-                                {item.nome.charAt(0)}
-                              </span>
-
-                              <strong>
-                                {item.nome}
-                              </strong>
-
-                              <small>
-                                {item.preco > 0
-                                  ? `+ ${formatarPreco(
-                                      item.preco
-                                    )}`
-                                  : "Incluso"}
-                              </small>
-
-                              <span className="complemento__check">
-                                {selecionado && (
-                                  <Check size={15} />
-                                )}
-                              </span>
-
-                            </button>
-                          );
-                        })}
+                          }
+                        )}
 
                     </div>
+
                   </div>
                 )
               )}
@@ -288,7 +517,9 @@ function finalizarMontagem() {
                 className="montador__voltar"
                 onClick={voltar}
               >
-                <ArrowLeft size={17} />
+                <ArrowLeft
+                  size={17}
+                />
 
                 Voltar
               </button>
@@ -300,7 +531,9 @@ function finalizarMontagem() {
               >
                 Ver resumo
 
-                <ArrowRight size={18} />
+                <ArrowRight
+                  size={18}
+                />
               </button>
 
             </div>
@@ -308,20 +541,28 @@ function finalizarMontagem() {
           </div>
         )}
 
+        {/* ETAPA 3 */}
+
         {etapa === 3 && (
           <div className="montador__conteudo">
 
             <header className="montador__cabecalho">
-              <span>PASSO 03</span>
+
+              <span>
+                PASSO 03
+              </span>
 
               <h1>
-                Seu Açaí Bomba
+                {bombaAtiva
+                  ? bombaAtiva.nome
+                  : "Seu Açaí Bomba"}
               </h1>
 
               <p>
-                Confira se está tudo do jeito
-                que você quer.
+                Confira se está tudo
+                do jeito que você quer.
               </p>
+
             </header>
 
             <div className="resumo">
@@ -329,7 +570,10 @@ function finalizarMontagem() {
               <div className="resumo__principal">
 
                 <div className="resumo__grupo">
-                  <span>Tamanho</span>
+
+                  <span>
+                    Tamanho
+                  </span>
 
                   <strong>
                     {tamanho?.nome}
@@ -337,42 +581,63 @@ function finalizarMontagem() {
 
                   <button
                     type="button"
-                    onClick={() => setEtapa(1)}
+                    onClick={() =>
+                      setEtapa(1)
+                    }
                   >
                     Alterar
                   </button>
+
                 </div>
 
                 <div className="resumo__grupo">
 
                   <div className="resumo__grupo-cabecalho">
+
                     <span>
                       Complementos
                     </span>
 
                     <button
                       type="button"
-                      onClick={() => setEtapa(2)}
+                      onClick={() =>
+                        setEtapa(2)
+                      }
                     >
                       Alterar
                     </button>
+
                   </div>
 
-                  {complementosSelecionados.length === 0 ? (
+                  {complementosSelecionados.length ===
+                  0 ? (
                     <p className="resumo__vazio">
-                      Nenhum complemento selecionado.
+                      Nenhum complemento
+                      selecionado.
                     </p>
                   ) : (
                     <div className="resumo__complementos">
 
                       {complementosSelecionados.map(
-                        (item) => (
-                          <span key={item.id}>
-                            {item.nome}
+                        (
+                          item
+                        ) => (
+                          <span
+                            key={
+                              item.id
+                            }
+                          >
+                            {
+                              item.nome
+                            }
 
-                            {item.preco > 0 && (
+                            {item.preco >
+                              0 && (
                               <small>
-                                + {formatarPreco(item.preco)}
+                                +{" "}
+                                {formatarPreco(
+                                  item.preco
+                                )}
                               </small>
                             )}
                           </span>
@@ -385,16 +650,24 @@ function finalizarMontagem() {
                 </div>
 
                 <div className="resumo__quantidade">
+
                   <span>
                     Quantidade
                   </span>
 
                   <div>
+
                     <button
                       type="button"
-                      onClick={diminuirQuantidade}
+                      onClick={
+                        diminuirQuantidade
+                      }
                     >
-                      <Minus size={16} />
+                      <Minus
+                        size={
+                          16
+                        }
+                      />
                     </button>
 
                     <strong>
@@ -403,11 +676,19 @@ function finalizarMontagem() {
 
                     <button
                       type="button"
-                      onClick={aumentarQuantidade}
+                      onClick={
+                        aumentarQuantidade
+                      }
                     >
-                      <Plus size={16} />
+                      <Plus
+                        size={
+                          16
+                        }
+                      />
                     </button>
+
                   </div>
+
                 </div>
 
               </div>
@@ -419,22 +700,31 @@ function finalizarMontagem() {
                 </span>
 
                 <strong>
-                  {formatarPreco(total)}
+                  {formatarPreco(
+                    total
+                  )}
                 </strong>
 
                 <p>
-                  O pedido ainda será confirmado
-                  pela loja no WhatsApp.
+                  O pedido ainda será
+                  confirmado pela loja
+                  no WhatsApp.
                 </p>
 
                 <button
                   type="button"
                   className="botao-dourado resumo__continuar"
-                  onClick={finalizarMontagem}
+                  onClick={
+                    finalizarMontagem
+                  }
                 >
-                  Continuar pedido
+              {itemEmEdicaoId
+  ? "Salvar alterações"
+  : "Continuar pedido"}    
 
-                  <ArrowRight size={18} />
+                  <ArrowRight
+                    size={18}
+                  />
                 </button>
 
               </aside>
@@ -448,7 +738,9 @@ function finalizarMontagem() {
                 className="montador__voltar"
                 onClick={voltar}
               >
-                <ArrowLeft size={17} />
+                <ArrowLeft
+                  size={17}
+                />
 
                 Voltar
               </button>
@@ -459,6 +751,7 @@ function finalizarMontagem() {
         )}
 
       </div>
+
     </section>
   );
 }

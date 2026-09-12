@@ -1,41 +1,50 @@
 import Header from "./components/Header/Header";
 import Hero from "./components/Hero/Hero";
 import ComoFunciona from "./components/ComoFunciona/ComoFunciona";
-import { Route,Routes,} from "react-router-dom";
+import BombasDaCasa from "./components/BombasDaCasa/BombasDaCasa";
+
+import { Route, Routes } from "react-router-dom";
+
 import MontarAcai from "./pages/MontarAcai/MontarAcai";
 import Carrinho from "./pages/Carrinho/Carrinho";
+import Checkout from "./pages/Checkout/Checkout";
 
-  
 function App() {
   return (
     <>
       <Header />
 
-<main>
-  <Routes>
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
 
-    <Route
-      path="/"
-      element={
-        <>
-          <Hero />
+                <ComoFunciona />
 
-          <ComoFunciona />
-        </>
-      }
-    />
+                <BombasDaCasa />
+              </>
+            }
+          />
 
-    <Route
-      path="/carrinho"
-      element={<Carrinho />}
-/>
-    <Route
-      path="/montar"
-      element={<MontarAcai />}
-    />
+          <Route
+            path="/montar"
+            element={<MontarAcai />}
+          />
 
-  </Routes>
-</main>
+          <Route
+            path="/carrinho"
+            element={<Carrinho />}
+          />
+
+          <Route
+            path="/checkout"
+            element={<Checkout />}
+          />
+        </Routes>
+      </main>
     </>
   );
 }

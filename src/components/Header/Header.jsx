@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   Menu,
@@ -6,81 +9,148 @@ import {
   X,
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
+
+import { contato } from "../../config/contato";
+
 import "./Header.css";
 
 function Header() {
-  const [menuAberto, setMenuAberto] = useState(false);
+  const [menuAberto, setMenuAberto] =
+    useState(false);
+
+  const location = useLocation();
 
   function alternarMenu() {
-    setMenuAberto(!menuAberto);
+    setMenuAberto(
+      (estadoAtual) => !estadoAtual
+    );
   }
 
   function fecharMenu() {
     setMenuAberto(false);
   }
 
+  useEffect(() => {
+    if (
+      location.pathname !== "/" ||
+      !location.hash
+    ) {
+      return;
+    }
+
+    const id =
+      location.hash.replace("#", "");
+
+    const timer = setTimeout(() => {
+      const elemento =
+        document.getElementById(id);
+
+      if (elemento) {
+        elemento.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
+
+    return () =>
+      clearTimeout(timer);
+  }, [
+    location.pathname,
+    location.hash,
+  ]);
+
+  const mensagemAtendente =
+    encodeURIComponent(
+      "Olá! Quero falar com um atendente."
+    );
+
+  const linkWhatsapp =
+    `https://wa.me/${contato.whatsapp}` +
+    `?text=${mensagemAtendente}`;
+
   return (
     <header className="header">
+
       <div className="container header__container">
 
-        <Link to="/" className="header__logo" onClick={fecharMenu}>
-  <img
-    src="/images/branding/logo-acai-bomba.png"
-    alt="Açaí Bomba"
-    className="header__logo-imagem"
-  />
-</Link>
+        <Link
+          to="/#inicio"
+          className="header__logo"
+          onClick={fecharMenu}
+          aria-label="Ir para o início"
+        >
+          <img
+            src="/images/branding/logo-acai-bomba.png"
+            alt="Açaí Bomba"
+            className="header__logo-imagem"
+          />
+        </Link>
 
         <nav
-          className={`header__nav ${
-            menuAberto ? "header__nav--aberto" : ""
-          }`}
+          className={
+            `header__nav ${
+              menuAberto
+                ? "header__nav--aberto"
+                : ""
+            }`
+          }
         >
-          <a
-            href="#inicio"
+
+          <Link
+            to="/#inicio"
             onClick={fecharMenu}
           >
             Início
-          </a>
+          </Link>
 
-          <a
-            href="#cardapio"
+          <Link
+            to="/montar"
             onClick={fecharMenu}
           >
             Cardápio
-          </a>
+          </Link>
 
-          <a
-            href="#como-funciona"
+          <Link
+            to="/#como-funciona"
             onClick={fecharMenu}
           >
             Como funciona
-          </a>
+          </Link>
 
-          <a
-            href="#mais-pedidos"
+          <Link
+            to="/#mais-pedidos"
             onClick={fecharMenu}
           >
-            Mais pedidos
-          </a>
+            Bombas da casa
+          </Link>
 
           <a
-            href="#contato"
+            href={linkWhatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={fecharMenu}
           >
             Contato
           </a>
+
         </nav>
 
         <Link
-  to="/montar" className="header__pedido" onClick={fecharMenu}>
-  <ShoppingBag size={17} />
+          to="/montar"
+          className="header__pedido"
+          onClick={fecharMenu}
+        >
+          <ShoppingBag size={17} />
 
-  <span>
-    Fazer pedido
-  </span>
-</Link>
+          <span>
+            Fazer pedido
+          </span>
+        </Link>
 
         <button
           type="button"
@@ -91,6 +161,7 @@ function Header() {
               ? "Fechar menu"
               : "Abrir menu"
           }
+          aria-expanded={menuAberto}
         >
           {menuAberto ? (
             <X size={26} />
@@ -100,6 +171,7 @@ function Header() {
         </button>
 
       </div>
+
     </header>
   );
 }
