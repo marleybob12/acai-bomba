@@ -3,12 +3,46 @@ import {
   SlidersHorizontal,
   CupSoda,
 } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import "./ComoFunciona.css";
 
 function ComoFunciona() {
+
+const secaoRef = useRef(null);
+
+const [visivel, setVisivel] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setVisivel(true);
+
+        observer.disconnect();
+      }
+    },
+    {
+      threshold: 0.25,
+    }
+  );
+
+  if (secaoRef.current) {
+    observer.observe(secaoRef.current);
+  }
+
+  return () => {
+    observer.disconnect();
+  };
+}, []);
+
   return (
     <section
+     ref={secaoRef}
       className="como-funciona"
       id="como-funciona"
     >
@@ -33,7 +67,7 @@ function ComoFunciona() {
 
         </div>
 
-        <div className="como-funciona__cards">
+        <div className={`   como-funciona__cards ${visivel ? "como-funciona__cards--visivel" : ""} `}>
 
           <article className="passo">
 
