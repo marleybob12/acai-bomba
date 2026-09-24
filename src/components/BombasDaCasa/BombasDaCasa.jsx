@@ -108,7 +108,12 @@ useEffect(() => {
   className="bombas" id="mais-pedidos">
       <div className="container">
 
-        <header className="bombas__cabecalho">
+       <header
+  className={`
+    bombas__cabecalho
+    ${visivel ? "bombas__cabecalho--visivel" : ""}
+  `}
+> 
 
           <span>
             AS FAVORITAS

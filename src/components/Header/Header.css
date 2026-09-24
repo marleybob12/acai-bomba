@@ -112,9 +112,27 @@
   height: 58px;
 
   object-fit: contain;
+
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.header__logo:hover
+.header__logo-imagem {
+  transform:
+    scale(1.05)
+    rotate(-1deg);
+
+  filter:
+    drop-shadow(
+      0 0 12px
+      rgba(245, 189, 59, 0.2)
+    );
 }
 
 .header__pedido {
+  overflow: hidden;
   min-height: 42px;
 
   padding: 0 18px;
@@ -144,6 +162,16 @@
   transition: var(--transicao);
 }
 
+.header__pedido svg {
+  transition:
+    transform 0.25s ease;
+}
+
+.header__pedido:hover svg {
+  transform:
+    translateY(-2px)
+    scale(1.08);
+}
 .header__pedido:hover {
   background: var(--dourado);
 

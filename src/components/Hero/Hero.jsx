@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
+
 import "./Hero.css";
 
 function Hero() {
@@ -15,8 +16,19 @@ function Hero() {
       className="hero"
       id="inicio"
     >
-      <div className="hero__efeito hero__efeito--roxo" />
-      <div className="hero__efeito hero__efeito--dourado" />
+      <div
+        className="
+          hero__efeito
+          hero__efeito--roxo
+        "
+      />
+
+      <div
+        className="
+          hero__efeito
+          hero__efeito--dourado
+        "
+      />
 
       <div className="container hero__container">
 
@@ -27,6 +39,7 @@ function Hero() {
           </span>
 
           <h1 className="hero__titulo">
+
             <span className="hero__titulo-branco">
               SEU AÇAÍ,
             </span>
@@ -34,6 +47,7 @@ function Hero() {
             <span className="hero__titulo-dourado">
               SUAS REGRAS.
             </span>
+
           </h1>
 
           <h2 className="hero__subtitulo">
@@ -46,7 +60,13 @@ function Hero() {
             e mais momentos bons.
           </p>
 
-          <Link to="/montar"  className="botao-dourado hero__botao">
+          <Link
+            to="/montar"
+            className="
+              botao-dourado
+              hero__botao
+            "
+          >
             Montar meu açaí
 
             <ArrowRight size={19} />
@@ -64,12 +84,12 @@ function Hero() {
 
           <div className="hero__circulo" />
 
-          <div className="hero__produto-imagem">
-            <img
-              src="/images/hero/acai-hero.png"
-              alt="Copo de açaí Açaí Bomba"
-            />
-          </div>
+         <div className="hero__produto-imagem">
+  <img
+    src="/images/hero/acai-hero.png"
+    alt="Copo de açaí com morango, banana e granola"
+  />
+</div>
 
           <div className="hero__coroa">
             ♛
@@ -84,6 +104,7 @@ function Hero() {
         <div className="container hero__beneficios">
 
           <div className="hero__beneficio">
+
             <Leaf size={22} />
 
             <div>
@@ -95,9 +116,11 @@ function Hero() {
                 de qualidade
               </span>
             </div>
+
           </div>
 
           <div className="hero__beneficio">
+
             <Gem size={22} />
 
             <div>
@@ -109,9 +132,11 @@ function Hero() {
                 inigualável
               </span>
             </div>
+
           </div>
 
           <div className="hero__beneficio">
+
             <MapPin size={22} />
 
             <div>
@@ -123,9 +148,11 @@ function Hero() {
                 rápida
               </span>
             </div>
+
           </div>
 
           <div className="hero__beneficio">
+
             <Sparkles size={22} />
 
             <div>
@@ -137,6 +164,7 @@ function Hero() {
                 com atitude
               </span>
             </div>
+
           </div>
 
         </div>
