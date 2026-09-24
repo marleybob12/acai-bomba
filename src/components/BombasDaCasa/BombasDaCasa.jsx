@@ -1,5 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import "./BombasDaCasa.css";
 
 const bombas = [
@@ -61,6 +67,33 @@ const bombas = [
 function BombasDaCasa() {
   const navigate = useNavigate();
 
+  const secaoRef = useRef(null);
+
+const [visivel, setVisivel] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setVisivel(true);
+
+        observer.disconnect();
+      }
+    },
+    {
+      threshold: 0.15,
+    }
+  );
+
+  if (secaoRef.current) {
+    observer.observe(secaoRef.current);
+  }
+
+  return () => {
+    observer.disconnect();
+  };
+}, []);
+
   function montarBomba(bomba) {
     navigate("/montar", {
       state: {
@@ -71,9 +104,8 @@ function BombasDaCasa() {
 
   return (
     <section
-      className="bombas"
-      id="mais-pedidos"
-    >
+  ref={secaoRef}
+  className="bombas" id="mais-pedidos">
       <div className="container">
 
         <header className="bombas__cabecalho">
@@ -94,7 +126,12 @@ function BombasDaCasa() {
 
         </header>
 
-        <div className="bombas__grid">
+       <div
+  className={`
+    bombas__grid
+    ${visivel ? "bombas__grid--visivel" : ""}
+  `}
+>
 
           {bombas.map((bomba) => (
             <article

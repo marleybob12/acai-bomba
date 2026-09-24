@@ -50,7 +50,7 @@ useEffect(() => {
 
       <div className="container como-funciona__container">
 
-        <div className="como-funciona__cabecalho">
+        <div className={`como-funciona__cabecalho ${visivel ? "como-funciona__cabecalho--visivel" : ""} `}>
 
           <span className="como-funciona__tag">
             SIMPLES E RÁPIDO

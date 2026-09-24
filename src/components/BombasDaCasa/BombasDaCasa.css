@@ -21,6 +21,7 @@
   max-width: 650px;
 
   margin-bottom: 38px;
+  
 }
 
 .bombas__cabecalho > span {
@@ -83,6 +84,12 @@
 .bomba-card {
   position: relative;
 
+  opacity: 0;
+
+translate: 0 40px;
+
+--entrada-delay: 0s;
+
   overflow: hidden;
 
   border:
@@ -96,7 +103,33 @@
     var(--card);
 
   transition:
-    var(--transicao);
+  opacity 0.65s ease var(--entrada-delay),
+  translate 0.65s ease var(--entrada-delay),
+  transform var(--transicao),
+  border-color var(--transicao),
+  box-shadow var(--transicao);
+}
+
+.bombas__grid--visivel
+.bomba-card {
+  opacity: 1;
+
+  translate: 0 0;
+}
+
+.bombas__grid--visivel
+.bomba-card:nth-child(2) {
+  --entrada-delay: 0.15s;
+}
+
+.bombas__grid--visivel
+.bomba-card:nth-child(3) {
+  --entrada-delay: 0.3s;
+}
+
+.bombas__grid--visivel
+.bomba-card:nth-child(4) {
+  --entrada-delay: 0.45s;
 }
 
 .bomba-card:hover {
