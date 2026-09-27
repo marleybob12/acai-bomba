@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Permite abrir e atualizar as rotas do React Router diretamente.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
