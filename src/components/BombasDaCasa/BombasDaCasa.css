@@ -542,3 +542,85 @@ overflow: hidden;
 .bomba-card:nth-child(3) .bomba-card__imagem img {
   object-position: center 75%;
 }
+
+/* MELHORIA DO ENQUADRAMENTO DAS FOTOS */
+
+.bombas__grid {
+  max-width: 1120px;
+  margin-inline: auto;
+  gap: 26px;
+}
+
+.bomba-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.bomba-card__imagem {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+}
+
+.bomba-card__imagem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Sombra mais suave para não esconder o produto */
+.bomba-card__imagem::after {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 10, 0.3) 0%,
+    transparent 35%
+  );
+}
+
+/* Zoom mais discreto */
+.bomba-card:hover .bomba-card__imagem img {
+  transform: scale(1.02);
+}
+
+/* Mantém o foco na parte inferior da foto da Crocante */
+.bomba-card:nth-child(3) .bomba-card__imagem img {
+  object-position: center 75%;
+}
+
+/* Alinha os botões mesmo quando o texto quebra linha */
+.bomba-card__conteudo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bomba-card__botao {
+  margin-top: auto;
+}
+
+/* Uma coluna centralizada em tablets e celulares */
+@media (max-width: 900px) {
+  .bombas__grid {
+    max-width: 620px;
+  }
+
+  .bomba-card__imagem {
+    height: auto;
+  }
+}
+
+@media (max-width: 650px) {
+  .bomba-card__imagem {
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .bomba-card__imagem {
+    height: auto;
+  }
+}
